@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Запис у FitLife Studio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: #1a1a1a;
+            border: 2px solid #00ff88;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #00ff88;
+            font-size: 2.5em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .logo p {
+            color: #888;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #00ff88;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .required {
+            color: #ff4444;
+            margin-left: 3px;
+        }
+
+        input[type="text"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 15px;
+            background: #0a0a0a;
+            border: 2px solid #333;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="tel"]:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
+
+        input::placeholder {
+            color: #555;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .success-message {
+            display: none;
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            color: #00ff88;
+            margin-top: 20px;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .error {
+            border-color: #ff4444 !important;
+        }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>FitLife</h1>
+            <p>Studio</p>
+        </div>
+
+        <form id="bookingForm">
+            <div class="form-group">
+                <label for="name">Ім'я</label>
+                <input type="text" id="name" name="name" placeholder="Введіть ваше ім'я">
+                <div class="error-message" id="nameError">Будь ласка, введіть ваше ім'я</div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Номер телефону<span class="required">*</span></label>
+                <input type="tel" id="phone" name="phone" placeholder="+380 XX XXX XX XX" required>
+                <div class="error-message" id="phoneError">Будь ласка, введіть коректний номер телефону</div>
+            </div>
+
+            <button type="submit" class="submit-btn">Записатися</button>
+        </form>
+
+        <div class="success-message" id="successMessage">
+            <h3>✓ Дякуємо за запис!</h3>
+            <p>Ми зв'яжемося з вами найближчим часом</p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('bookingForm');
+        const nameInput = document.getElementById('name');
+        const phoneInput = document.getElementById('phone');
+        const nameError = document.getElementById('nameError');
+        const phoneError = document.getElementById('phoneError');
+        const successMessage = document.getElementById('successMessage');
+
+        phoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.startsWith('380')) {
+                value = value.slice(3);
+            }
+            if (value.length > 0) {
+                let formatted = '+380';
+                if (value.length > 0) formatted += ' ' + value.slice(0, 2);
+                if (value.length > 2) formatted += ' ' + value.slice(2, 5);
+                if (value.length > 5) formatted += ' ' + value.slice(5, 7);
+                if (value.length > 7) formatted += ' ' + value.slice(7, 9);
+                e.target.value = formatted;
+            }
+        });
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let isValid = true;
+            
+            nameInput.classList.remove('error');
+            phoneInput.classList.remove('error');
+            nameError.classList.remove('show');
+            phoneError.classList.remove('show');
+
+            if (nameInput.value.trim() === '') {
+                nameInput.classList.add('error');
+                nameError.classList.add('show');
+                isValid = false;
+            }
+
+            const phoneDigits = phoneInput.value.replace(/\D/g, '');
+            if (phoneDigits.length < 12) {
+                phoneInput.classList.add('error');
+                phoneError.classList.add('show');
+                isValid = false;
+            }
+
+            if (isValid) {
+                form.style.display = 'none';
+                successMessage.classList.add('show');
+                
+                setTimeout(() => {
+                    form.reset();
+                    form.style.display = 'block';
+                    successMessage.classList.remove('show');
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
